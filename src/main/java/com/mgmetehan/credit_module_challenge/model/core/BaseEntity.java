@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -37,6 +38,11 @@ public abstract class BaseEntity implements Serializable {
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "UPDATED_AT", insertable = false)
+    @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
