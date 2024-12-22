@@ -1,0 +1,23 @@
+version: '3'
+services:
+  db:
+    image: debezium/example-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: toor
+    ports:
+      - 5432:5432
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command:
+      - "postgres"
+      - "-c"
+      - "wal_level=logical"
+
+  # Adminer hizmeti, veritabani yonetim arayuzu saglar.
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8001:8080  # Adminer'a disaridan erisim saglar.
