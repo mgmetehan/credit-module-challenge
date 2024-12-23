@@ -2,11 +2,15 @@ package com.mgmetehan.credit_module_challenge.service;
 
 import com.mgmetehan.credit_module_challenge.converter.CustomerConverter;
 import com.mgmetehan.credit_module_challenge.dto.request.CreateCustomerDTO;
+import com.mgmetehan.credit_module_challenge.dto.request.UpdateCreditLimitDTO;
 import com.mgmetehan.credit_module_challenge.dto.response.CustomerResponseDTO;
 import com.mgmetehan.credit_module_challenge.model.Customer;
 import com.mgmetehan.credit_module_challenge.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,5 +21,36 @@ public class CustomerService {
         Customer customer = CustomerConverter.toEntity(requestDTO);
         Customer savedCustomer = customerRepository.save(customer);
         return CustomerConverter.toResponseDTO(savedCustomer);
+    }
+
+    public CustomerResponseDTO getCustomerById(Long id) {
+        Customer customer = customerFindById(id);
+        return CustomerConverter.toResponseDTO(customer);
+    }
+
+    public CustomerResponseDTO updateCreditLimit(Long id, UpdateCreditLimitDTO requestDTO) {
+        Customer customer = customerFindById(id);
+        customer.setCreditLimit(requestDTO.getCreditLimit());
+        Customer updatedCustomer = customerRepository.save(customer);
+        return CustomerConverter.toResponseDTO(updatedCustomer);
+    }
+
+    private Customer customerFindById(Long id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
+        return customer;
+    }
+
+    public void deleteCustomer(Long id) {
+        Customer customer = customerFindById(id);
+        customer.setDeleted(true);
+        customerRepository.save(customer);
+    }
+
+    public List<CustomerResponseDTO> getAllCustomers() {
+        List<Customer> customers = customerRepository.findAll();
+        return customers.stream()
+                .map(CustomerConverter::toResponseDTO)
+                .collect(Collectors.toList());
     }
 }
