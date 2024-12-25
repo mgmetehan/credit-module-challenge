@@ -17,8 +17,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -38,5 +37,5 @@ public class Loan extends BaseEntity {
     private Customer customer;
 
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Installment> installments;
+    private List<Installment> installments;
 }

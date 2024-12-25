@@ -6,8 +6,6 @@ import com.mgmetehan.credit_module_challenge.model.Customer;
 import com.mgmetehan.credit_module_challenge.model.Loan;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
 @Component
 public class CreateLoanConverter {
 
