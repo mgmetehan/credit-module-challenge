@@ -16,8 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -36,22 +37,7 @@ public class LoanService {
 
         Loan loan = createLoanConverter.toEntity(request, customer);
 
-        List<Installment> installments = new ArrayList<>();
-        BigDecimal installmentAmount = request.getLoanAmount()
-                .divide(BigDecimal.valueOf(request.getNumberOfInstallment()), 2, RoundingMode.HALF_UP);
-
-        LocalDate dueDate = LocalDate.now().plusMonths(1).withDayOfMonth(1);
-        for (int i = 0; i < request.getNumberOfInstallment(); i++) {
-            Installment installment = Installment.builder()
-                    .amount(installmentAmount)
-                    .paidAmount(BigDecimal.ZERO)
-                    .dueDate(dueDate)
-                    .isPaid(false)
-                    .loan(loan)
-                    .build();
-            installments.add(installment);
-            dueDate = dueDate.plusMonths(1);
-        }
+        List<Installment> installments = getInstallments(request, loan);
 
         loan.setInstallments(installments);
         loan = loanRepository.save(loan);
@@ -62,5 +48,29 @@ public class LoanService {
         customerService.updateCustomer(updateCustomerRequest);
 
         return createLoanConverter.toResponse(loan);
+    }
+
+    private static List<Installment> getInstallments(CreateLoanRequest request, Loan loan) {
+        BigDecimal installmentAmount = calculateInstallmentAmount(request);
+
+        LocalDate firstDueDate = LocalDate.now().plusMonths(1).withDayOfMonth(1);
+
+        return IntStream.range(0, request.getNumberOfInstallment())
+                .mapToObj(i -> createInstallment(installmentAmount, firstDueDate.plusMonths(i), loan))
+                .collect(Collectors.toList());
+    }
+
+    private static BigDecimal calculateInstallmentAmount(CreateLoanRequest request) {
+        return request.getLoanAmount()
+                .divide(BigDecimal.valueOf(request.getNumberOfInstallment()),
+                        2, RoundingMode.HALF_UP);
+    }
+
+    private static Installment createInstallment(BigDecimal amount, LocalDate dueDate, Loan loan) {
+        return Installment.builder()
+                .amount(amount)
+                .dueDate(dueDate)
+                .loan(loan)
+                .build();
     }
 }
