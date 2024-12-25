@@ -3,11 +3,13 @@ package com.mgmetehan.credit_module_challenge.service;
 import com.mgmetehan.credit_module_challenge.converter.CustomerConverter;
 import com.mgmetehan.credit_module_challenge.dto.request.CreateCustomerDTO;
 import com.mgmetehan.credit_module_challenge.dto.request.UpdateCreditLimitDTO;
+import com.mgmetehan.credit_module_challenge.dto.request.UpdateCustomerRequest;
 import com.mgmetehan.credit_module_challenge.dto.response.CustomerResponseDTO;
 import com.mgmetehan.credit_module_challenge.model.Customer;
 import com.mgmetehan.credit_module_challenge.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +37,7 @@ public class CustomerService {
         return CustomerConverter.toResponseDTO(updatedCustomer);
     }
 
-    private Customer customerFindById(Long id) {
+    public Customer customerFindById(Long id) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
         return customer;
@@ -52,5 +54,16 @@ public class CustomerService {
         return customers.stream()
                 .map(CustomerConverter::toResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public CustomerResponseDTO updateCustomer(UpdateCustomerRequest request) {
+        Customer customer = customerFindById(request.getId());
+        customer.setName(request.getName());
+        customer.setSurname(request.getSurname());
+        customer.setCreditLimit(request.getCreditLimit());
+        customer.setUsedCreditLimit(request.getUsedCreditLimit());
+        Customer updatedCustomer = customerRepository.save(customer);
+        return CustomerConverter.toResponseDTO(updatedCustomer);
     }
 }

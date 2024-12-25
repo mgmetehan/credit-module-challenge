@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -28,7 +29,8 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "CUSTOMERS")
 @Entity
-@SQLDelete(sql = "UPDATE CUSTOMERS SET deleted = true WHERE id = ? AND version = ?")
+@SQLDelete(sql = "UPDATE CUSTOMERS SET DELETED = true WHERE id = ? AND version = ?")
+@SQLRestriction("deleted = false")
 public class Customer extends BaseEntity {
     private String name;
     private String surname;

@@ -31,7 +31,6 @@ import java.util.Set;
 public class Loan extends BaseEntity {
     private BigDecimal loanAmount;
     private Integer numberOfInstallment;
-    private LocalDate createDate;
     private Boolean isPaid;
 
     @ManyToOne(fetch = FetchType.LAZY)

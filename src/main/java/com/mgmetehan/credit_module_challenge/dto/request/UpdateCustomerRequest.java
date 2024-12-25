@@ -1,27 +1,20 @@
-package com.mgmetehan.credit_module_challenge.dto.response;
+package com.mgmetehan.credit_module_challenge.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
-public class CustomerResponseDTO {
+public class UpdateCustomerRequest {
     private Long id;
     private String name;
     private String surname;
     private BigDecimal creditLimit;
     private BigDecimal usedCreditLimit;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-}
+} 
