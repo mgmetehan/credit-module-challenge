@@ -12,7 +12,7 @@ public class CreateLoanConverter {
     public Loan toEntity(CreateLoanRequest request, Customer customer) {
         return Loan.builder()
                 .loanAmount(request.getLoanAmount())
-                .numberOfInstallment(request.getNumberOfInstallment())
+                .numberOfInstallment(Integer.valueOf(request.getNumberOfInstallment()))
                 .isPaid(false)
                 .customer(customer)
                 .build();

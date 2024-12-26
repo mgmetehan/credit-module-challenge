@@ -3,6 +3,7 @@ package com.mgmetehan.credit_module_challenge.controller;
 import com.mgmetehan.credit_module_challenge.dto.request.CreateLoanRequest;
 import com.mgmetehan.credit_module_challenge.dto.response.CreateLoanResponse;
 import com.mgmetehan.credit_module_challenge.service.LoanService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class LoanController {
     private final LoanService loanService;
 
     @PostMapping
-    public ResponseEntity<CreateLoanResponse> createLoan(@RequestBody CreateLoanRequest request) {
+    public ResponseEntity<CreateLoanResponse> createLoan(@RequestBody @Valid CreateLoanRequest request) {
         return ResponseEntity.ok(loanService.createLoan(request));
     }
 } 
