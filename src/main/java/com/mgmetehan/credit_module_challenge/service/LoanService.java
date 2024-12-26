@@ -51,6 +51,8 @@ public class LoanService {
         loan.setInstallments(installments);
         loan = loanRepository.save(loan);
 
+        BigDecimal updatedCreditLimit = customer.getCreditLimit().subtract(request.getLoanAmount());
+        customer.setCreditLimit(updatedCreditLimit);
         UpdateCustomerRequest updateCustomerRequest = CustomerConverter
                 .getUpdateCustomerRequest(request, customer);
 
@@ -64,6 +66,7 @@ public class LoanService {
 
         return LoanConstants.INTEREST_RATES.entrySet()
                 .stream()
+                .sorted(Map.Entry.comparingByKey())
                 .filter(entry -> months <= entry.getKey())
                 .map(Map.Entry::getValue)
                 .findFirst()
