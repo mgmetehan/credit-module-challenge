@@ -1,16 +1,20 @@
 package com.mgmetehan.credit_module_challenge.service;
 
 import com.mgmetehan.credit_module_challenge.converter.CustomerConverter;
+import com.mgmetehan.credit_module_challenge.converter.LoanConverter;
 import com.mgmetehan.credit_module_challenge.dto.request.CreateCustomerDTO;
 import com.mgmetehan.credit_module_challenge.dto.request.UpdateCreditLimitDTO;
 import com.mgmetehan.credit_module_challenge.dto.request.UpdateCustomerRequest;
 import com.mgmetehan.credit_module_challenge.dto.response.CustomerResponseDTO;
+import com.mgmetehan.credit_module_challenge.dto.response.ResponseLoanDTO;
 import com.mgmetehan.credit_module_challenge.model.Customer;
 import com.mgmetehan.credit_module_challenge.repository.CustomerRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,9 +42,8 @@ public class CustomerService {
     }
 
     public Customer customerFindById(Long id) {
-        Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
-        return customer;
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found with id: " + id));
     }
 
     public void deleteCustomer(Long id) {
@@ -65,5 +68,13 @@ public class CustomerService {
         customer.setUsedCreditLimit(request.getUsedCreditLimit());
         Customer updatedCustomer = customerRepository.save(customer);
         return CustomerConverter.toResponseDTO(updatedCustomer);
+    }
+
+    public List<ResponseLoanDTO> getCustomerLoans(Long customerId) {
+        Customer customer = customerFindById(customerId);
+
+        return new ArrayList<>(customer.getLoans()).stream()
+                .map(LoanConverter::toLoanResponse)
+                .collect(Collectors.toList());
     }
 }

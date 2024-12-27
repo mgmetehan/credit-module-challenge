@@ -3,6 +3,7 @@ package com.mgmetehan.credit_module_challenge.controller;
 import com.mgmetehan.credit_module_challenge.dto.request.CreateCustomerDTO;
 import com.mgmetehan.credit_module_challenge.dto.request.UpdateCreditLimitDTO;
 import com.mgmetehan.credit_module_challenge.dto.response.CustomerResponseDTO;
+import com.mgmetehan.credit_module_challenge.dto.response.ResponseLoanDTO;
 import com.mgmetehan.credit_module_challenge.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -53,5 +54,10 @@ public class CustomerController {
     public ResponseEntity<List<CustomerResponseDTO>> getAllCustomers() {
         List<CustomerResponseDTO> response = customerService.getAllCustomers();
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{customerId}/loans")
+    public ResponseEntity<List<ResponseLoanDTO>> getCustomerLoans(@PathVariable Long customerId) {
+        return ResponseEntity.ok(customerService.getCustomerLoans(customerId));
     }
 }

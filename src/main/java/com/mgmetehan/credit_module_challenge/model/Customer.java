@@ -19,7 +19,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -40,7 +40,7 @@ public class Customer extends BaseEntity {
     private boolean deleted;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Loan> loans;
+    private List<Loan> loans;
 
     @PrePersist
     public void prePersist() {
