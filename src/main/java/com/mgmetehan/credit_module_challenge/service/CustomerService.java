@@ -77,4 +77,17 @@ public class CustomerService {
                 .map(LoanConverter::toLoanResponse)
                 .collect(Collectors.toList());
     }
+
+    public List<ResponseLoanDTO> getCustomerLoansByPaymentStatus(Long customerId, Boolean isPaid) {
+        Customer customer = customerFindById(customerId);
+        
+        if (isPaid == null) {
+            return getCustomerLoans(customerId);
+        }
+        
+        return new ArrayList<>(customer.getLoans()).stream()
+                .filter(loan -> loan.getIsPaid().equals(isPaid))
+                .map(LoanConverter::toLoanResponse)
+                .collect(Collectors.toList());
+    }
 }
